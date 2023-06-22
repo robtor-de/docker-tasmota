@@ -30,7 +30,7 @@ RUN cd /init_pio_tasmota &&\
 
 # Save platformio caches and toolchains
 RUN cp -r /root/.platformio / &&\ 
-    chmod -R 777 /.platformio #&&\
+    chmod -R 777 /.platformio 
 #    mkdir /.cache /.local &&\
 #    chmod -R 777 /.cache /.local
 

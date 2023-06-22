@@ -12,17 +12,27 @@ RUN pip install --upgrade pip &&\
 # Init project
 COPY init_pio_tasmota /init_pio_tasmota
 
+# Install full project dependencies
+RUN --mount=type=bind,target=/tasmota,source=tasmota \
+	cd /tasmota &&\
+	platformio upgrade &&\
+	pio pkg update &&\
+	pio pkg install
+
 # Install project dependencies using a init project.
 RUN cd /init_pio_tasmota &&\ 
     platformio upgrade &&\
     pio pkg update &&\
+    pio pkg install &&\
     pio run &&\
     cd ../ &&\ 
-    rm -fr init_pio_tasmota &&\ 
-    cp -r /root/.platformio / &&\ 
-    chmod -R 777 /.platformio &&\
-    mkdir /.cache /.local &&\
-    chmod -R 777 /.cache /.local
+    rm -fr init_pio_tasmota
+
+# Save platformio caches and toolchains
+RUN cp -r /root/.platformio / &&\ 
+    chmod -R 777 /.platformio #&&\
+#    mkdir /.cache /.local &&\
+#    chmod -R 777 /.cache /.local
 
 
 COPY entrypoint.sh /entrypoint.sh
